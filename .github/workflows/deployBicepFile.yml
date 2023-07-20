@@ -1,71 +1,71 @@
-# on: 
-#   push:
-#     branches: [ main ]
-#   pull_request:
-#     branches: [ main ]    
-# name: Azure ARM
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]    
+name: Azure ARM
   
-# jobs:
-#   validate-yaml:
-#     runs-on: ubuntu-latest
-#     name: Validate YAML file
-#     steps:
-#       - uses: actions/checkout@v2
-#       - run: yamllint alicesmith.yml
+jobs:
+  validate-yaml:
+    runs-on: ubuntu-latest
+    name: Validate YAML file
+    steps:
+      - uses: actions/checkout@v2
+      - run: yamllint alicesmith.yml
   
-#   lint:
-#     name: Lint code base
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: checkout yml/bicep file
-#         uses: actions/checkout@v3
-#       - name: build yml/bicep file
-#         run: az bicep build --file alicesmith.yml
+  lint:
+    name: Lint code base
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout yml/bicep file
+        uses: actions/checkout@v3
+      - name: build yml/bicep file
+        run: az bicep build --file alicesmith.yml
     
     
-#   build-and-deploy:
-#     needs: [ validate-yaml, lint ]
-#     runs-on: ubuntu-latest
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@main
+  build-and-deploy:
+    needs: [ validate-yaml, lint ]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@main
   
-#     - name: Log into Azure
-#       uses: azure/login@v1
-#       with:
-#         creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
   
-#     # Deploy ARM template
-#     - name: Run ARM deploy
-#       uses: azure/arm-deploy@v1
-#       with:
-#           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-#           resourceGroupName: ${{ secrets.AZURE_RG }}
-#           template: ./azuredeploy.json
-#           parameters: storageAccountType=Standard_LRS
-#           scope: '/subscriptions/${{ secrets.AZURE_SUBSCRIPTION }}/resourceGroups/${{ secrets.AZURE_RG }}'
+    # Deploy ARM template
+    - name: Run ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ secrets.AZURE_RG }}
+          template: ./alicesmith.bicep
+          parameters: storageAccountType=Standard_LRS
+          scope: 'resourcegroup'
 
-#     # output containerName variable from template
-#     - name: finished
-#       run: echo "finished"
+    # output containerName variable from template
+    - name: finished
+      run: echo "finished"
 
 
-#     # # validate Bicep file
-#     # - name: validate
-#     #   uses: azure/arm-deploy@v1
-#     #   with:
-#     #     subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-#     #     resourceGroupName: "${{ secrets.AZURE_RG }}"
-#     #     template: ./alicesmith.bicep
-#     #     deploymentMode: Validate
+    # # validate Bicep file
+    # - name: validate
+    #   uses: azure/arm-deploy@v1
+    #   with:
+    #     subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+    #     resourceGroupName: "${{ secrets.AZURE_RG }}"
+    #     template: ./alicesmith.bicep
+    #     deploymentMode: Validate
 
-#     # Deploy Bicep file
-#     # - name: deploy
-#     #   uses: azure/arm-deploy@v1
-#     #   with:
-#     #     deploymentName: github-advanced-test
-#     #     subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-#     #     resourceGroupName: "${{ secrets.AZURE_RG }}"
-#     #     template: ./alicesmith.bicep
-#     #     parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
-#     #     #failOnStdErr: false          
+    # Deploy Bicep file
+    # - name: deploy
+    #   uses: azure/arm-deploy@v1
+    #   with:
+    #     deploymentName: github-advanced-test
+    #     subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+    #     resourceGroupName: "${{ secrets.AZURE_RG }}"
+    #     template: ./alicesmith.bicep
+    #     parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
+    #     #failOnStdErr: false          

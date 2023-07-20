@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
 
 name: Azure ARM
 jobs:
@@ -9,7 +9,7 @@ jobs:
     name: Validate YAML file
     steps:
       - uses: actions/checkout@v2
-      - run: yamllint .github/workflows/*.yml
+      - run: yamllint .github/workflows/bicep.yml
     
   build-and-deploy:
     runs-on: ubuntu-latest

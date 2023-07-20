@@ -46,7 +46,8 @@ jobs:
           scope: '/subscriptions/${{ secrets.AZURE_SUBSCRIPTION }}/resourceGroups/${{ secrets.AZURE_RG }}'
 
     # output containerName variable from template
-    - run: echo "finished"
+    - name: finished
+      run: echo "finished"
 
 
     # # validate Bicep file

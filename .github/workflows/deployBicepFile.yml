@@ -1,24 +1,65 @@
-on: [push]
-name: Azure ARM
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-
+on: 
+    push:
+      branches: [ main ]
+    pull_request:
+      branches: [ main ]    
+  name: Azure ARM
+  
+  jobs:
+  
+    validate-yaml:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - name: Validate YAML file
+      run: yamllint alicesmith.yml
+  
+    lint:
+      name: Lint code base
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Checkout code
+        - uses: actions/checkout@v2
+          with:
+            fetch-depth: 0
+    
+    super-lint:
+      name: Run github/super-linter
+      uswwwes: github/super-linter@v4
+      env:
+        # Lint all code - disabled in as part of #262
+        VALIDATE_ALL_CODEBASE: false
+        # Need to define main branch as default is set to master in super-linter
+        DEFAULT_BRANCH: main
+        # Enable setting the status of each individual linter run in the Checks section of a pull request
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # The following linter types will be enabled:
+        VALIDATE_JSON: true
+        VALIDATE_MARKDOWN: true
+        VALIDATE_POWERSHELL: true
+        VALIDATE_YAML: true
+        VALIDATE_EDITORCONFIG: true
+        # Added exclusion in workflow for generated documentation. PR #304
+        FILTER_REGEX_EXCLUDE: (.*generateddocs/.*.bicep.md$|.*.tests.ps1)
+  
+    build-and-deploy:
+      runs-on: ubuntu-latest
+      steps:
       # Checkout code
-    - uses: actions/checkout@main
-
+      - uses: actions/checkout@main
+  
       # Log into Azure
-    - uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  
       # Deploy Bicep file
-    - name: deploy
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: ./alicesmith.bicep
-        parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
-        failOnStdErr: false
+      - name: deploy
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: "${{ secrets.AZURE_RG }}"
+          template: ./alicesmith.bicep
+          parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
+          failOnStdErr: false

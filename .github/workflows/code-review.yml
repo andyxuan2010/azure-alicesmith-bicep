@@ -1,11 +1,13 @@
 ---
 name: Code Review - Linting & Link Checks
 
-on:
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch: {}
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#workflow_dispatch: {}
+
+on: [push]      
 
 jobs:
   lint:

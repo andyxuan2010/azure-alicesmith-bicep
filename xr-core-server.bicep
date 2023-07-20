@@ -22,6 +22,13 @@ param nsg_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/$
 param ipconfig_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/networkInterfaces/${vnic_name}/ipConfigurations/ipconfig1'
 
 
+@description('The name of the DNS zone to be created.  Must have at least 2 segments, e.g. hostname.org')
+param zoneName string = 'argentiacapital.com'
+
+@description('The name of the DNS record to be created.  The name is relative to the zone, not the FQDN.')
+param recordName string = 'www'
+
+
 //for the vnet
 resource vnetalicesmith 'Microsoft.Network/virtualNetworks@2023-02-01' = {
   name: vnet_name
@@ -352,3 +359,33 @@ resource metricAlerts2 'microsoft.insights/metricAlerts@2018-03-01' = {
   }
   dependsOn: [emailActionGroup]  
 }
+
+
+
+resource argentiacapitalcom 'Microsoft.Network/dnsZones@2018-05-01' = {
+  name: zoneName
+  //etag: 'da1dd138-94e1-4a56-b78f-9cd8fb12f60f'
+  location: 'global'
+  tags: {}
+  properties: {
+    zoneType: 'Public'
+  }
+}
+
+resource record 'Microsoft.Network/dnsZones/A@2018-05-01' = {
+  parent: argentiacapitalcom
+  name: recordName
+  properties: {
+    TTL: 3600
+    // targetResource: {
+    //   id: pip_externalid
+    // }
+    ARecords: [
+      {
+        ipv4Address: pipalicesmith.properties.ipAddress
+      }
+    ]    
+  }
+}
+
+output nameServers array = argentiacapitalcom.properties.nameServers

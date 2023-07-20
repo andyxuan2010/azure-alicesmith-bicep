@@ -9,7 +9,7 @@ jobs:
     name: Validate YAML file
     steps:
       - uses: actions/checkout@v2
-      - run: yamllint alicesmith.yml
+      - run: yamllint .github/workflows/*.yml
     
   build-and-deploy:
     runs-on: ubuntu-latest

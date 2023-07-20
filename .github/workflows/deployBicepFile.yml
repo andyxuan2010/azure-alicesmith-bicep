@@ -45,9 +45,6 @@ jobs:
           parameters: storageAccountType=Standard_LRS
           scope: 'resourcegroup'
 
-    # output containerName variable from template
-    - name: finished
-      run: echo "finished"
 
 
     # # validate Bicep file

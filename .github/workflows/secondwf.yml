@@ -1,6 +1,6 @@
 on: [push]
-  name: Azure ARM
-  jobs:
+name: Azure ARM
+jobs:
     build-and-deploy:
       runs-on: ubuntu-latest
       steps:
@@ -21,6 +21,7 @@ on: [push]
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./azuredeploy.json
           parameters: storageAccountType=Standard_LRS
+          scope: '/subscriptions/${{ secrets.AZURE_SUBSCRIPTION }}/resourceGroups/${{ secrets.AZURE_RG }}'
 
-        # output containerName variable from template
+          # output containerName variable from template
       - run: echo ${{ steps.deploy.outputs.containerName }}

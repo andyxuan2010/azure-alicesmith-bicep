@@ -17,8 +17,10 @@ jobs:
     name: Lint code base
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: az bicep build --file alicesmith.yml
+      - name: checkout yml/bicep file
+        uses: actions/checkout@v3
+      - name: build yml/bicep file
+        run: az bicep build --file alicesmith.yml
     
     
   build-and-deploy:

@@ -13,7 +13,7 @@ param metricAlerts_Available_Memory_Bytes_vm_alicesmith_name string = 'Available
 param metricAlerts_OS_Disk_IOPS_Consumed_Percentage_vm_alicesmith_name string = 'OS Disk IOPS Consumed Percentage - vm-alicesmith'
 param metricAlerts_Data_Disk_IOPS_Consumed_Percentage_vm_alicesmith_name string = 'Data Disk IOPS Consumed Percentage - vm-alicesmith'
 param location string = resourceGroup().location
-
+param adminUsername string = 'azureuser'
 resource actionGroups_RecommendedAlertRules_AG_1_name_resource 'microsoft.insights/actionGroups@2023-01-01' = {
   name: actionGroups_RecommendedAlertRules_AG_1_name
   location: 'Global'
@@ -194,7 +194,7 @@ resource virtualMachines_vm_alicesmith_name_resource 'Microsoft.Compute/virtualM
     }
     osProfile: {
       computerName: virtualMachines_vm_alicesmith_name
-      adminUsername: 'azureuser'
+      adminUsername: adminUsername
       linuxConfiguration: {
         disablePasswordAuthentication: true
         ssh: {

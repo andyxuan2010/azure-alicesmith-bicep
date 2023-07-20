@@ -12,6 +12,7 @@ param metricAlerts_Network_Out_Total_vm_alicesmith_name string = 'Network Out To
 param metricAlerts_Available_Memory_Bytes_vm_alicesmith_name string = 'Available Memory Bytes - vm-alicesmith'
 param metricAlerts_OS_Disk_IOPS_Consumed_Percentage_vm_alicesmith_name string = 'OS Disk IOPS Consumed Percentage - vm-alicesmith'
 param metricAlerts_Data_Disk_IOPS_Consumed_Percentage_vm_alicesmith_name string = 'Data Disk IOPS Consumed Percentage - vm-alicesmith'
+param location string = resourceGroup().location
 
 resource actionGroups_RecommendedAlertRules_AG_1_name_resource 'microsoft.insights/actionGroups@2023-01-01' = {
   name: actionGroups_RecommendedAlertRules_AG_1_name
@@ -41,7 +42,7 @@ resource actionGroups_RecommendedAlertRules_AG_1_name_resource 'microsoft.insigh
 
 resource networkSecurityGroups_vm_alicesmith_nsg_name_resource 'Microsoft.Network/networkSecurityGroups@2022-11-01' = {
   name: networkSecurityGroups_vm_alicesmith_nsg_name
-  location: 'eastus'
+  location: location
   properties: {
     securityRules: [
       {
@@ -88,7 +89,7 @@ resource networkSecurityGroups_vm_alicesmith_nsg_name_resource 'Microsoft.Networ
 
 resource publicIPAddresses_vm_alicesmith_ip_name_resource 'Microsoft.Network/publicIPAddresses@2022-11-01' = {
   name: publicIPAddresses_vm_alicesmith_ip_name
-  location: 'eastus'
+  location: location
   sku: {
     name: 'Standard'
     tier: 'Regional'
@@ -107,7 +108,7 @@ resource publicIPAddresses_vm_alicesmith_ip_name_resource 'Microsoft.Network/pub
 
 resource virtualNetworks_vm_alicesmith_vnet_name_resource 'Microsoft.Network/virtualNetworks@2022-11-01' = {
   name: virtualNetworks_vm_alicesmith_vnet_name
-  location: 'eastus'
+  location: location
   properties: {
     addressSpace: {
       addressPrefixes: [
@@ -134,7 +135,7 @@ resource virtualNetworks_vm_alicesmith_vnet_name_resource 'Microsoft.Network/vir
 
 resource vaults_defaultVault_name_resource 'Microsoft.RecoveryServices/vaults@2023-04-01' = {
   name: vaults_defaultVault_name
-  location: 'eastus'
+  location: location
   sku: {
     name: 'RS0'
     tier: 'Standard'
@@ -153,7 +154,7 @@ resource vaults_defaultVault_name_resource 'Microsoft.RecoveryServices/vaults@20
 
 resource virtualMachines_vm_alicesmith_name_resource 'Microsoft.Compute/virtualMachines@2023-03-01' = {
   name: virtualMachines_vm_alicesmith_name
-  location: 'eastus'
+  location: location
   zones: [
     '1'
   ]
@@ -709,7 +710,7 @@ resource metricAlerts_VM_Availability_vm_alicesmith_name_resource 'microsoft.ins
 
 resource networkInterfaces_vm_alicesmith25_z1_name_resource 'Microsoft.Network/networkInterfaces@2022-11-01' = {
   name: networkInterfaces_vm_alicesmith25_z1_name
-  location: 'eastus'
+  location: location
   kind: 'Regular'
   properties: {
     ipConfigurations: [

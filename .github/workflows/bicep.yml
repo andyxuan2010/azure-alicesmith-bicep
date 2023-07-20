@@ -28,7 +28,7 @@ jobs:
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secrets.AZURE_RG }}
+        resourceGroupName: ${{ env.AZURE_RG_ALICESMITH }}
         template: basic-alicesmith.bicep
         scope: resourcegroup
 

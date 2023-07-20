@@ -29,6 +29,6 @@ jobs:
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
-        template: alicesmith.bicep
+        template: basic-alicesmith.bicep
         scope: resourcegroup
 

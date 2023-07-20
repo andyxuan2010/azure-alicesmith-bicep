@@ -1,0 +1,21 @@
+# deploy the rg-alicesmith resource group
+az deployment sub create --template-file rg-alicesmith.bicep -l eastus
+
+# deploy nsg
+az deployment group create --resource-group "rg-alicesmith" --template-file nsg-alicesmith.bicep
+
+#deploy vnic
+az deployment group create --resource-group "rg-alicesmith" --template-file vnic-alicesmith.bicep
+
+#deploy pip
+az deployment group create --resource-group "rg-alicesmith" --template-file pip-alicesmith.bicep
+
+#deploy vnet
+az deployment group create --resource-group "rg-alicesmith" --template-file vnet-alicesmith.bicep
+
+#deploy vm
+az deployment group create --resource-group "rg-alicesmith" --template-file vm-alicesmith.bicep
+
+
+# deploy a basic vm in one short
+az deployment group create --resource-group "rg-alicesmith" --template-file basic-alicesmith.bicep

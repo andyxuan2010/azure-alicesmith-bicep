@@ -4,7 +4,7 @@ param publicIPAddresses_vm_alicesmith_ip_name string = 'vm-alicesmith-ip'
 param virtualNetworks_vm_alicesmith_vnet_name string = 'vm-alicesmith-vnet'
 param networkInterfaces_vm_alicesmith25_z1_name string = 'vm-alicesmith25_z1'
 param networkSecurityGroups_vm_alicesmith_nsg_name string = 'vm-alicesmith-nsg'
-param actionGroups_RecommendedAlertRules_AG_1_name string = 'RecommendedAlertRules-AG-1'
+param actionGroups_RecommendedAlertRules_AG_1_name string = 'RecommendedAlertRules-AG-1'wwwwwww
 param metricAlerts_Percentage_CPU_vm_alicesmith_name string = 'Percentage CPU - vm-alicesmith'
 param metricAlerts_VM_Availability_vm_alicesmith_name string = 'VM Availability - vm-alicesmith'
 param metricAlerts_Network_In_Total_vm_alicesmith_name string = 'Network In Total - vm-alicesmith'
@@ -14,6 +14,8 @@ param metricAlerts_OS_Disk_IOPS_Consumed_Percentage_vm_alicesmith_name string = 
 param metricAlerts_Data_Disk_IOPS_Consumed_Percentage_vm_alicesmith_name string = 'Data Disk IOPS Consumed Percentage - vm-alicesmith'
 param location string = resourceGroup().location
 param adminUsername string = 'azureuser'
+
+
 resource actionGroups_RecommendedAlertRules_AG_1_name_resource 'microsoft.insights/actionGroups@2023-01-01' = {
   name: actionGroups_RecommendedAlertRules_AG_1_name
   location: 'Global'

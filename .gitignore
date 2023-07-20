@@ -48,3 +48,6 @@ id_rsa*
 **/k8s/.kube/*
 
 credentials
+
+
+*.json

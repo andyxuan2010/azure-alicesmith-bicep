@@ -3,28 +3,27 @@ on:
       branches: [ main ]
     pull_request:
       branches: [ main ]    
-  name: Azure ARM
+name: Azure ARM
   
-  jobs:
+jobs:
+  validate-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Validate YAML file
+    run: yamllint alicesmith.yml
   
-    validate-yaml:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - name: Validate YAML file
-      run: yamllint alicesmith.yml
+  lint:
+    name: Lint code base
+    runs-on: ubuntu-latest
   
-    lint:
-      name: Lint code base
-      runs-on: ubuntu-latest
-  
-      steps:
-        - name: Checkout code
-        - uses: actions/checkout@v3
-        - script: |
-            az bicep build --file alicesmith.yml
-          with:
-            fetch-depth: 0
+    steps:
+      - name: Checkout code
+      - uses: actions/checkout@v3
+      - script: |
+          az bicep build --file alicesmith.yml
+        with:
+          fetch-depth: 0
     
     
     build-and-deploy:

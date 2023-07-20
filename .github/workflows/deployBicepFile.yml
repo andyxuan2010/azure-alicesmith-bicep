@@ -1,58 +1,53 @@
 on: 
-    push:
-      branches: [ main ]
-    pull_request:
-      branches: [ main ]    
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]    
 name: Azure ARM
   
 jobs:
   validate-yaml:
     runs-on: ubuntu-latest
+    name: Validate YAML file
     steps:
       - uses: actions/checkout@v2
-      - name: Validate YAML file
-    run: yamllint alicesmith.yml
+      - run: yamllint alicesmith.yml
   
   lint:
     name: Lint code base
     runs-on: ubuntu-latest
-  
     steps:
-      - name: Checkout code
       - uses: actions/checkout@v3
-      - script: |
-          az bicep build --file alicesmith.yml
-        with:
-          fetch-depth: 0
+      - run: az bicep build --file alicesmith.yml
     
     
-    build-and-deploy:
-      needs: [pvalidate-yaml, lint]
-      runs-on: ubuntu-latest
-      steps:
-      # Checkout code
-      - uses: actions/checkout@main
+  build-and-deploy:
+    needs: [ validate-yaml, lint ]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@main
   
-      # Log into Azure
-      - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
   
-      # validate Bicep file
-      - name: validate
-        uses: azure/arm-deploy@v1
-        with:
-          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-          resourceGroupName: "${{ secrets.AZURE_RG }}"
-          template: ./alicesmith.bicep
-          deploymentMode: Validate
+    # validate Bicep file
+    - name: validate
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        resourceGroupName: "${{ secrets.AZURE_RG }}"
+        template: ./alicesmith.bicep
+        deploymentMode: Validate
 
-      # Deploy Bicep file
-      - name: deploy
-        uses: azure/arm-deploy@v1
-        with:
-          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-          resourceGroupName: "${{ secrets.AZURE_RG }}"
-          template: ./alicesmith.bicep
-          parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
-          failOnStdErr: false          
+    # Deploy Bicep file
+    - name: deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        resourceGroupName: "${{ secrets.AZURE_RG }}"
+        template: ./alicesmith.bicep
+        parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
+        failOnStdErr: false          

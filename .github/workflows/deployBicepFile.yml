@@ -45,11 +45,12 @@ jobs:
     #     deploymentMode: Validate
 
     # Deploy Bicep file
-    - name: deploy
-      uses: azure/arm-deploy@v1
-      with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: "${{ secrets.AZURE_RG }}"
-        template: ./alicesmith.bicep
-        parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
-        failOnStdErr: false          
+    # - name: deploy
+    #   uses: azure/arm-deploy@v1
+    #   with:
+    #     deploymentName: github-advanced-test
+    #     subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+    #     resourceGroupName: "${{ secrets.AZURE_RG }}"
+    #     template: ./alicesmith.bicep
+    #     parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
+    #     #failOnStdErr: false          

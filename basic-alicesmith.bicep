@@ -10,6 +10,18 @@ param pip_name string = 'pip-alicesmith'
 param vm_name string = 'vm-alicesmith'
 param osdisk_name string = 'osdisk-alicesmith'
 
+
+param metricAlertsVMAvailability string = 'VM Availability - vm-alicesmith'
+param metricAlertsCPU string = 'CPU usage - vm-alicesmith'
+param virtualMachines_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Compute/virtualMachines/${vm_name}'
+param emailActionGroup_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/microsoft.insights/actionGroups/emailActionGroup'
+param pip_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/publicIPAddresses/${pip_name}'
+param subnet_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/virtualNetworks/${vnet_name}/subnets/default'
+param vnic_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/networkInterfaces/${vnic_name}'
+param nsg_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/networkSecurityGroups/${nsg_name}'
+param ipconfig_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/networkInterfaces/${vnic_name}/ipConfigurations/ipconfig1'
+
+
 //for the vnet
 resource vnetalicesmith 'Microsoft.Network/virtualNetworks@2023-02-01' = {
   name: vnet_name
@@ -49,13 +61,13 @@ resource vnicalicesmith 'Microsoft.Network/networkInterfaces@2023-02-01' = {
     ipConfigurations: [
       {
         name: 'ipconfig1'
-        id: '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/networkInterfaces/vnic-alicesmith/ipConfigurations/ipconfig1'
+        id: ipconfig_externalid
         type: 'Microsoft.Network/networkInterfaces/ipConfigurations'
         properties: {
           privateIPAddress: '10.0.0.4'
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
-            id: '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/publicIPAddresses/pip-alicesmith'
+            id: pip_externalid
             properties: {
               publicIPAddressVersion: 'IPv4'
               publicIPAllocationMethod: 'Dynamic'
@@ -69,7 +81,7 @@ resource vnicalicesmith 'Microsoft.Network/networkInterfaces@2023-02-01' = {
             }
           }
           subnet: {
-            id: '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/virtualNetworks/vnet-alicesmith/subnets/default'
+            id: subnet_externalid
           }
           primary: true
           privateIPAddressVersion: 'IPv4'
@@ -83,7 +95,7 @@ resource vnicalicesmith 'Microsoft.Network/networkInterfaces@2023-02-01' = {
     enableIPForwarding: false
     disableTcpStateTracking: false
     networkSecurityGroup: {
-      id: '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/networkSecurityGroups/nsg-alicesmith'
+      id: nsg_externalid
     }
     nicType: 'Standard'
     //allowPort25Out: false
@@ -227,7 +239,7 @@ resource vmalicesmith 'Microsoft.Compute/virtualMachines@2023-03-01' = {
     networkProfile: {
       networkInterfaces: [
         {
-          id: '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/networkInterfaces/${vnic_name}'
+          id: vnic_externalid
           properties: {
             deleteOption: 'Delete'
           }
@@ -239,4 +251,104 @@ resource vmalicesmith 'Microsoft.Compute/virtualMachines@2023-03-01' = {
     '1'
   ]
   dependsOn: [ vnicalicesmith, vnetalicesmith, pipalicesmith, nsgalicesmith ]
+}
+
+
+
+
+
+
+
+
+
+resource emailActionGroup 'microsoft.insights/actionGroups@2019-06-01' = {
+  name: 'emailActionGroup'
+  location: 'global'
+  properties: {
+    groupShortName: 'string'
+    enabled: true
+    emailReceivers: [
+      {
+        name: 'test email'
+        emailAddress: 'test@gmail.com'
+        useCommonAlertSchema: true
+      }
+    ]
+  }
+}
+
+
+resource metricAlerts1 'microsoft.insights/metricAlerts@2018-03-01' = {
+  name: metricAlertsVMAvailability
+  location: 'Global'
+  properties: {
+    severity: 3
+    enabled: true
+    scopes: [
+      virtualMachines_externalid
+    ]
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT5M'
+    criteria: {
+      allOf: [
+        {
+          threshold: 1
+          name: 'Metric1'
+          metricNamespace: 'Microsoft.Compute/virtualMachines'
+          metricName: 'VmAvailabilityMetric'
+          operator: 'LessThan'
+          timeAggregation: 'Average'
+          criterionType: 'StaticThresholdCriterion'
+        }
+      ]
+      'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+    }
+    targetResourceType: 'Microsoft.Compute/virtualMachines'
+    actions: [
+      {
+        actionGroupId: emailActionGroup_externalid
+        webHookProperties: {}
+      }
+    ]
+  }
+  dependsOn: [emailActionGroup]
+}
+
+
+
+
+resource metricAlerts2 'microsoft.insights/metricAlerts@2018-03-01' = {
+  name: metricAlertsCPU
+  location: 'Global'
+  properties: {
+    severity: 3
+    enabled: true
+    scopes: [
+      virtualMachines_externalid
+    ]
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT5M'
+    criteria: {
+      allOf: [
+        {
+          threshold: 80
+          name: 'Metric1'
+          metricNamespace: 'Microsoft.Compute/virtualMachines'
+          metricName: 'Percentage CPU'
+          operator: 'GreaterThan'
+          timeAggregation: 'Average'
+          criterionType: 'StaticThresholdCriterion'
+        }
+      ]
+      'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+    }
+    targetResourceType: 'Microsoft.Compute/virtualMachines'
+    actions: [
+      {
+        actionGroupId: emailActionGroup_externalid
+        webHookProperties: {}
+      }
+    ]
+  }
+  dependsOn: [emailActionGroup]  
 }

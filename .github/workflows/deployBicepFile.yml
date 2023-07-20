@@ -42,7 +42,6 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           template: ./alicesmith.bicep
-          parameters: storageAccountType=Standard_LRS
           scope: 'resourcegroup'
 
 

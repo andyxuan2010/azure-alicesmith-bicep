@@ -1,0 +1,36 @@
+name: Deploy Bicep files
+
+trigger:
+- main
+
+variables:
+  resourceGroupName: 'rg-alicesmith'
+  location: 'eastus'
+  templateFile: 'xr-core-server.bicep'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+
+- task: AzureCLI@2
+  displayName: Preview Bicep Changes
+  inputs:
+    azureSubscription: 'Microsoft-Azure-0(1ec5edd4-5654-4246-8027-b29ef63b3393)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az --version
+      az group create --name $(resourceGroupName) --location $(location)
+      az deployment group what-if --resource-group $(resourceGroupName) \
+         --template-file $(templateFile)
+
+- task: AzureCLI@2
+  displayName: Deploy Bicep To Azure
+  inputs:
+    azureSubscription: 'Microsoft-Azure-0(1ec5edd4-5654-4246-8027-b29ef63b3393)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az deployment group create --resource-group $(resourceGroupName) \
+         --template-file $(templateFile)

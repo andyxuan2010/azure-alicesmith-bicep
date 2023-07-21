@@ -26,7 +26,7 @@ param ipconfig_externalid string = '/subscriptions/${subscriptionId}/resourceGro
 param zoneName string = 'dev.argentiacapital.com'
 
 @description('The name of the DNS record to be created.  The name is relative to the zone, not the FQDN.')
-param www_record string = 'www'
+//param www_record string = 'www'
 param demo_record string = 'demo'
 
 

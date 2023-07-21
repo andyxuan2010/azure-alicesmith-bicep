@@ -53,6 +53,28 @@ az group delete --name rg-alicesmith
 
 ## Github action CI/CD pipeline integration
 
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout code
+    - uses: actions/checkout@main
+
+      # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy ARM template
+    - name: Run ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        resourceGroupName: ${{ vars.AZURE_RG_ALICESMITH }}
+        template: xr-core-server.bicep
+        scope: resourcegroup
+![Alt text](image-6.png)
 
 
+### Resource diagram
 ![Alt text](image.png)

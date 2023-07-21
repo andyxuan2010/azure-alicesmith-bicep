@@ -16,7 +16,7 @@ steps:
 - task: AzureCLI@2
   displayName: Preview Bicep Changes
   inputs:
-    azureSubscription: 'Microsoft-Azure-0(1ec5edd4-5654-4246-8027-b29ef63b3393)'
+    azureSubscription: 'azure-devops-tfsp'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
@@ -28,7 +28,7 @@ steps:
 - task: AzureCLI@2
   displayName: Deploy Bicep To Azure
   inputs:
-    azureSubscription: 'Microsoft-Azure-0(1ec5edd4-5654-4246-8027-b29ef63b3393)'
+    azureSubscription: 'azure-devops-tfsp'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |

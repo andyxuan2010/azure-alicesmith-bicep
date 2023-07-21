@@ -3,8 +3,8 @@ az bicep version
 az login --use-device-code
 az account show --query name
 az group list -o table
-az group create -n 'rg-bicep' -l 'eastus'
-az deployment group create -g 'rg-bicep' -f ./storage.bicep
+az group create -n 'rg-alicesmith' -l 'eastus'
+az deployment group create -g 'rg-alicesmith' -f ./xr-core-server.bicep
 
 
 az bicep 

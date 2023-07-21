@@ -26,8 +26,8 @@ param ipconfig_externalid string = '/subscriptions/${subscriptionId}/resourceGro
 param zoneName string = 'dev.argentiacapital.com'
 
 @description('The name of the DNS record to be created.  The name is relative to the zone, not the FQDN.')
-//param www_record string = 'www'
 param demo_record string = 'demo'
+param www_record string = '@'
 
 
 //for the vnet
@@ -365,7 +365,6 @@ resource metricAlerts2 'microsoft.insights/metricAlerts@2018-03-01' = {
 
 resource devargentiacapitalcom 'Microsoft.Network/dnsZones@2018-05-01' = {
   name: zoneName
-  //scope: resourceGroup('PayAsYouGo')
   location: 'global'
   tags: {}
   properties: {
@@ -373,17 +372,18 @@ resource devargentiacapitalcom 'Microsoft.Network/dnsZones@2018-05-01' = {
   }
 }
 
-// resource record1 'Microsoft.Network/dnsZones/A@2018-05-01' = {
-//   parent: devargentiacapitalcom
-//   name: www_record
-//   properties: {
-//     TTL: 3600
-//     targetResource: {
-//       id: pip_externalid
-//     }
-   
-//   }
-// }
+resource record1 'Microsoft.Network/dnsZones/A@2018-05-01' = {
+  parent: devargentiacapitalcom
+  name: www_record
+  properties: {
+    TTL: 3600
+    ARecords: [
+      {
+        ipv4Address: pipalicesmith.properties.ipAddress
+      }
+    ]    
+  }
+}
 
 resource record2 'Microsoft.Network/dnsZones/A@2018-05-01' = {
   parent: devargentiacapitalcom

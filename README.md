@@ -53,26 +53,50 @@ az group delete --name rg-alicesmith
 
 ## Github action CI/CD pipeline integration
 
-  build-and-deploy:
+
+name: Azure BICEP Preview & Deploy
+jobs:
+  preview-bicep-changes:
     runs-on: ubuntu-latest
     steps:
-
-      # Checkout code
     - uses: actions/checkout@main
-
-      # Log into Azure
-    - uses: azure/login@v1
+    - name: Login to Azure
+      uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # Deploy ARM template
-    - name: Run ARM deploy
-      uses: azure/arm-deploy@v1
+    - name: Create Azure Resource Group
+      uses: Azure/cli@v1.0.6
       with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ vars.AZURE_RG_ALICESMITH }}
-        template: xr-core-server.bicep
-        scope: resourcegroup
+        inlineScript: |
+          az version
+          az group create -n $RESOURCE_GROUP -l eastus
+    - name: Preview Changes fron Bicep
+      uses: Azure/deployment-what-if-action@v1.0.0
+      with:
+        subscription: ${{ secrets.AZURE_SUBSCRIPTION }} # Subscription ID
+        resourceGroup: $RESOURCE_GROUP # Resource group name
+        templateFile: xr-core-server.bicep # ARM template or Bicep file
+  deploy-azure-bicep:
+    needs: [preview-bicep-changes]
+    runs-on: ubuntu-latest
+    steps:    
+      - uses: actions/checkout@main
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Deploy Bicep to Azure
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          #resourceGroupName: ${{ vars.AZURE_RG_ALICESMITH }}
+          resourceGroupName: ${{ env.RESOURCE_GROUP }}
+          template: xr-core-server.bicep
+          failOnStdErr: false
+          scope: resourcegroup
+
+
+
 ![Alt text](image-6.png)
 
 

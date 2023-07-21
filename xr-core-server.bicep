@@ -22,6 +22,19 @@ param nsg_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/$
 param ipconfig_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/networkInterfaces/${vnic_name}/ipConfigurations/ipconfig1'
 
 
+@description('Name of the Vault')
+param vaultName string = 'BackupVault'
+
+@description('Change Vault Storage Type (not allowed if the vault has registered backups)')
+@allowed([
+  'LocallyRedundant'
+  'GeoRedundant'
+])
+param vaultStorageRedundancy string = 'GeoRedundant'
+
+
+
+
 @description('The name of the DNS zone to be created.  Must have at least 2 segments, e.g. hostname.org')
 param zoneName string = 'dev.argentiacapital.com'
 
@@ -401,3 +414,23 @@ resource record2 'Microsoft.Network/dnsZones/A@2018-05-01' = {
 
 output nameServers array = devargentiacapitalcom.properties.nameServers
 output publicip string = pipalicesmith.properties.ipAddress
+
+
+
+
+
+resource backupVault 'Microsoft.DataProtection/BackupVaults@2021-01-01' = {
+  name: vaultName
+  location: location
+  identity: {
+    type: 'systemAssigned'
+  }
+  properties: {
+    storageSettings: [
+      {
+        datastoreType: 'VaultStore'
+        type: vaultStorageRedundancy
+      }
+    ]
+  }
+}

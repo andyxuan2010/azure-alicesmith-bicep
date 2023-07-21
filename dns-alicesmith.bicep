@@ -9,31 +9,42 @@ param resourcegroup string = resourceGroup().name
 param pip_name string = 'pip-alicesmith'
 param pip_externalid string = '/subscriptions/${subscriptionId}/resourceGroups/${resourcegroup}/providers/Microsoft.Network/publicIPAddresses/${pip_name}'
 
-resource argentiacapitalcom 'Microsoft.Network/dnsZones@2018-05-01' = {
-  name: zoneName
-  //etag: 'da1dd138-94e1-4a56-b78f-9cd8fb12f60f'
-  location: 'global'
-  tags: {}
-  properties: {
-    zoneType: 'Public'
-  }
+// resource argentiacapitalcom 'Microsoft.Network/dnsZones@2018-05-01' existing = {
+//   name: zoneName
+//   scope: resourceGroup('PayAsYouGo')
+//   //etag: 'da1dd138-94e1-4a56-b78f-9cd8fb12f60f'
+//   // location: 'global'
+//   // tags: {}
+//   // properties: {
+//   //   zoneType: 'Public'
+//   // }
+// }
+
+
+
+// resource record 'Microsoft.Network/dnsZones/A@2018-05-01' = {
+//   parent: argentiacapitalcom
+//   name: recordName
+//   properties: {
+//     TTL: 3600
+//     targetResource: {
+//       id: pip_externalid
+//     }
+//   }
+// }
+
+// output nameServers array = argentiacapitalcom.properties.nameServers
+
+
+module dnsmodule './dnsmodule.bicep' = {
+  name: 'dnsmodule'
+  scope: resourceGroup('PayAsYouGo')
+  // params: {
+  //   dnsZoneName: 'your_dns_zone_name'
+  //   dnsRecordName: 'www'
+  //   dnsRecordIpAddress: '1.2.3.4'
+  // }
 }
-
-
-
-resource record 'Microsoft.Network/dnsZones/A@2018-05-01' = {
-  parent: argentiacapitalcom
-  name: recordName
-  properties: {
-    TTL: 3600
-    targetResource: {
-      id: pip_externalid
-    }
-  }
-}
-
-output nameServers array = argentiacapitalcom.properties.nameServers
-
 
 
 

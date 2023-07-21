@@ -23,7 +23,7 @@ param ipconfig_externalid string = '/subscriptions/${subscriptionId}/resourceGro
 
 
 @description('The name of the DNS zone to be created.  Must have at least 2 segments, e.g. hostname.org')
-param zoneName string = 'argentiacapital.com'
+param zoneName string = 'dev.argentiacapital.com'
 
 @description('The name of the DNS record to be created.  The name is relative to the zone, not the FQDN.')
 param www_record string = 'www'
@@ -363,9 +363,9 @@ resource metricAlerts2 'microsoft.insights/metricAlerts@2018-03-01' = {
 
 
 
-resource argentiacapitalcom 'Microsoft.Network/dnsZones@2018-05-01' = {
+resource devargentiacapitalcom 'Microsoft.Network/dnsZones@2018-05-01' = {
   name: zoneName
-  //etag: 'da1dd138-94e1-4a56-b78f-9cd8fb12f60f'
+  //scope: resourceGroup('PayAsYouGo')
   location: 'global'
   tags: {}
   properties: {
@@ -373,20 +373,20 @@ resource argentiacapitalcom 'Microsoft.Network/dnsZones@2018-05-01' = {
   }
 }
 
-resource record1 'Microsoft.Network/dnsZones/A@2018-05-01' = {
-  parent: argentiacapitalcom
-  name: www_record
-  properties: {
-    TTL: 3600
-    targetResource: {
-      id: pip_externalid
-    }
+// resource record1 'Microsoft.Network/dnsZones/A@2018-05-01' = {
+//   parent: devargentiacapitalcom
+//   name: www_record
+//   properties: {
+//     TTL: 3600
+//     targetResource: {
+//       id: pip_externalid
+//     }
    
-  }
-}
+//   }
+// }
 
 resource record2 'Microsoft.Network/dnsZones/A@2018-05-01' = {
-  parent: argentiacapitalcom
+  parent: devargentiacapitalcom
   name: demo_record
   properties: {
     TTL: 3600
@@ -398,4 +398,6 @@ resource record2 'Microsoft.Network/dnsZones/A@2018-05-01' = {
   }
 }
 
-output nameServers array = argentiacapitalcom.properties.nameServers
+
+output nameServers array = devargentiacapitalcom.properties.nameServers
+output publicip string = pipalicesmith.properties.ipAddress

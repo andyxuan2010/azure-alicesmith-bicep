@@ -330,7 +330,7 @@ resource metricAlerts1 'microsoft.insights/metricAlerts@2018-03-01' = {
       }
     ]
   }
-  dependsOn: [emailActionGroup]
+  dependsOn: [ emailActionGroup, vmalicesmith ]
 }
 
 
@@ -369,7 +369,7 @@ resource metricAlerts2 'microsoft.insights/metricAlerts@2018-03-01' = {
       }
     ]
   }
-  dependsOn: [emailActionGroup]  
+  dependsOn: [emailActionGroup, vmalicesmith]  
 }
 
 

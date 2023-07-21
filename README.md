@@ -23,5 +23,36 @@ An Azure subscription. If you don't have an Azure subscription, create a free ac
 
 ### Review the Bicep file
 
+code xr-core-server.bicep
+
+
+
+### Deploy the Bicep file
+az group create --name rg-alicesmith --location eastus
+
+or to create resourcegroup by bicep instead of CLI
+
+az deployment sub create --template-file modules/rg-alicesmith.bicep --location eastus
+
+az deployment group create --resource-group rg-alicesmith --template-file xr-core-server.bicep
+
+
+### Review deployed resources
+
+az resource list --resource-group rg-alicesmith
+
+for demo purpose a test public dns zone was created:   dev.argentiacapital.com
+We can access the VM on the port HTTP/80 
+http://demo.dev.argentiacapital.com
+![Alt text](image-4.png)
+![Alt text](image-5.png)
+
+### Clean up resources
+az group delete --name rg-alicesmith
+
+
+## Github action CI/CD pipeline integration
+
+
 
 ![Alt text](image.png)

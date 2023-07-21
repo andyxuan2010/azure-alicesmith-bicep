@@ -33,8 +33,6 @@ param vaultName string = 'BackupVault'
 param vaultStorageRedundancy string = 'GeoRedundant'
 
 
-
-
 @description('The name of the DNS zone to be created.  Must have at least 2 segments, e.g. hostname.org')
 param zoneName string = 'dev.argentiacapital.com'
 
